@@ -1,0 +1,12 @@
+*
+!/.gitignore
+!/LICENSE
+!/MANIFEST.in
+!/README.md
+!/requirements.txt
+!/SECURITY.md
+!/setup.py
+!/TP_RequestFlows/
+!/TP_RequestFlows/__init__.py
+!/UnitTest/
+!/UnitTest/**
