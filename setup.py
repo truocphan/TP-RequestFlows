@@ -2,7 +2,7 @@ import setuptools
 
 setuptools.setup(
 	name="TP-RequestFlows",
-	version="2024.2.12",
+	version="2024.2.22",
 	author="TP Cyber Security",
 	license="MIT",
 	author_email="tpcybersec2023@gmail.com",

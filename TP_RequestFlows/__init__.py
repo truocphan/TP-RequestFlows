@@ -6,8 +6,8 @@ import os
 
 Flows = dict()
 
-def kwvars(environments, ret=dict()):
-	ret = dict()
+def kwvars(environments, vars=dict()):
+	vars = dict()
 
 	for importLib in environments["libs"]:
 		exec(importLib)
@@ -15,13 +15,13 @@ def kwvars(environments, ret=dict()):
 	for name in environments["vars"]:
 		if environments["vars"][name]["runCode"]:
 			try:
-				ret[name] = eval(environments["vars"][name]["value"])
+				vars[name] = eval(environments["vars"][name]["value"])
 			except Exception as e:
-				ret[name] = None
+				vars[name] = None
 		else:
-			ret[name] = environments["vars"][name]["value"]
+			vars[name] = environments["vars"][name]["value"]
 
-	return ret
+	return vars
 
 
 def run_flows(FlowFolders, injectObj=dict(), separator="||", parse_index="$", dupSign_start="{{{", dupSign_end="}}}", ordered_dict=False, update_content_length=True, proxy_server=None):
@@ -66,7 +66,14 @@ def run_flows(FlowFolders, injectObj=dict(), separator="||", parse_index="$", du
 				RequestBody = RequestRules.get("flows")[reqNum]["RequestBody"]
 				if type(RequestBody) == dict:
 					for name in RequestBody:
-						req.update_request_body_param(name, RequestBody[name].format(**kwvars(RequestRules.get("environments"))))
+						try:
+							datetype_ori = type(req.get_request_body_param(name))
+							datatype_new = type(eval(RequestBody[name].format(**kwvars(RequestRules.get("environments")))))
+
+							if datetype_ori == datatype_new or datetype_ori in [int, float] and datatype_new in [int, float]:
+								req.update_request_body_param(name, eval(RequestBody[name].format(**kwvars(RequestRules.get("environments")))))
+						except Exception as e:
+							req.update_request_body_param(name, RequestBody[name].format(**kwvars(RequestRules.get("environments"))))
 
 
 			injectObj_reqNum = {}
